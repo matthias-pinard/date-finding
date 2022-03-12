@@ -1,12 +1,12 @@
 import "./App.css";
-import Game from "./components/Game";
 import { GameProvider } from "./components/GameState";
+import Switch from "./components/Switch";
 
 function App() {
   return (
     <div className="App">
       <GameProvider>
-        <Game />
+        <Switch />
       </GameProvider>
     </div>
   );

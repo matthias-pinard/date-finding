@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 
 interface GameState {
   date: Date;
   response: number | undefined;
-  isCorrect: boolean;
-  isIncorect: boolean;
+  currentNbAnswer: number;
+  totalNbAnswer: number;
+  gameStep: GameStep;
+  startTime: number | undefined;
+  endTime: number | undefined;
+}
+
+enum GameStep {
+  Param,
+  Game,
+  Win,
+  Lose,
 }
 
 const initialState: GameState = {
   date: getRandomDate(),
   response: undefined,
-  isCorrect: false,
-  isIncorect: false,
+  currentNbAnswer: 0,
+  totalNbAnswer: 5,
+  gameStep: GameStep.Param,
+  startTime: undefined,
+  endTime: undefined,
 };
 
 function getRandomDateRange(start: Date, end: Date): Date {
@@ -25,7 +38,10 @@ function getRandomDate() {
   return getRandomDateRange(new Date(1900, 1, 1), new Date(2099, 12, 31));
 }
 
-type GameAction = { type: "reset" } | { type: "guess"; guess: number };
+type GameAction =
+  | { type: "reset" }
+  | { type: "guess"; guess: number }
+  | { type: "start"; number: number };
 
 export default function gameReducer(
   gameState: GameState,
@@ -36,18 +52,38 @@ export default function gameReducer(
       return {
         date: getRandomDate(),
         response: undefined,
-        isCorrect: false,
-        isIncorect: false,
+        currentNbAnswer: 0,
+        totalNbAnswer: gameState.totalNbAnswer,
+        gameStep: GameStep.Param,
+        startTime: undefined,
+        endTime: undefined,
       };
     case "guess":
       if (gameState.response != null) {
         return gameState;
       }
+      if (action.guess === gameState.date.getDay()) {
+        const nbGuess = gameState.currentNbAnswer + 1;
+        const win = nbGuess === gameState.totalNbAnswer;
+        return {
+          ...gameState,
+          date: getRandomDate(),
+          currentNbAnswer: nbGuess,
+          gameStep: win ? GameStep.Win : GameStep.Game,
+          endTime: win ? new Date().getTime() : undefined,
+        };
+      }
       return {
         ...gameState,
         response: action.guess,
-        isCorrect: action.guess === gameState.date.getDay(),
-        isIncorect: action.guess !== gameState.date.getDay(),
+        gameStep: GameStep.Lose,
+      };
+    case "start":
+      return {
+        ...gameState,
+        totalNbAnswer: action.number,
+        gameStep: GameStep.Game,
+        startTime: new Date().getTime(),
       };
   }
 }
@@ -68,9 +104,18 @@ function GameProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+function useGameState() {
+  return {
+    gameState: useContext(GameStateContext),
+    gameDispatch: useContext(GameStateDispatcherContext),
+  };
+}
+
 export {
   type GameAction,
   GameStateContext,
   GameStateDispatcherContext,
   GameProvider,
+  useGameState,
+  GameStep,
 };
