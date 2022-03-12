@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/date-finding/static/css/main.b149e55e.css",
-    "main.js": "/date-finding/static/js/main.b4d94dfc.js",
+    "main.js": "/date-finding/static/js/main.206ba737.js",
     "static/js/787.8ba797ee.chunk.js": "/date-finding/static/js/787.8ba797ee.chunk.js",
     "index.html": "/date-finding/index.html",
     "main.b149e55e.css.map": "/date-finding/static/css/main.b149e55e.css.map",
-    "main.b4d94dfc.js.map": "/date-finding/static/js/main.b4d94dfc.js.map",
+    "main.206ba737.js.map": "/date-finding/static/js/main.206ba737.js.map",
     "787.8ba797ee.chunk.js.map": "/date-finding/static/js/787.8ba797ee.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b149e55e.css",
-    "static/js/main.b4d94dfc.js"
+    "static/js/main.206ba737.js"
   ]
 }
