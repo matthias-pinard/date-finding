@@ -1,7 +1,9 @@
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { GameStateContext, GameStateDispatcherContext } from "./GameState";
 
 const Game = () => {
+  const { t } = useTranslation();
   const dispatch = useContext(GameStateDispatcherContext);
   const { date, isCorrect, isIncorect } = useContext(GameStateContext);
 
@@ -24,10 +26,10 @@ const Game = () => {
       <div>
         {(isCorrect || isIncorect) && (
           <button
-            className="px-2 my-5 rounded-md bg-gray-200"
+            className="px-2 py-1 my-5 rounded-md bg-gray-200 hover:bg-gray-300 text-l"
             onClick={() => restart()}
           >
-            Restart
+            {t("reset")}
           </button>
         )}
       </div>
@@ -35,28 +37,8 @@ const Game = () => {
   );
 };
 
-const getDayLabel = (day: number) => {
-  switch (day) {
-    case 0:
-      return "Lundi";
-    case 1:
-      return "Mardi";
-    case 2:
-      return "Mercredi";
-    case 3:
-      return "Jeudi";
-    case 4:
-      return "Vendredi";
-    case 5:
-      return "Samedi";
-    case 6:
-      return "Dimanche";
-    default:
-      return "";
-  }
-};
-
 const GuessButton = ({ day }: { day: number }) => {
+  const { t } = useTranslation();
   const dispatch = useContext(GameStateDispatcherContext);
   const { date, response, isIncorect } = useContext(GameStateContext);
   const backgroundColor =
@@ -65,12 +47,19 @@ const GuessButton = ({ day }: { day: number }) => {
       : response === day && isIncorect
       ? "bg-red-500"
       : "bg-gray-200";
+  const hoverBackgroundColor =
+    response != null && day === date.getDay()
+      ? "bg-green-700"
+      : response === day && isIncorect
+      ? "bg-red-700"
+      : "bg-gray-300";
+
   return (
     <button
-      className={`mx-2 px-2 rounded-md ${backgroundColor}`}
+      className={`mx-2 px-2 rounded-md ${backgroundColor} hover:${hoverBackgroundColor}`}
       onClick={() => dispatch({ type: "guess", guess: day })}
     >
-      {getDayLabel(day)}
+      {t("days", { returnObjects: true })[day]}
     </button>
   );
 };

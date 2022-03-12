@@ -40,7 +40,7 @@ export default function gameReducer(
         isIncorect: false,
       };
     case "guess":
-      if (gameState.response != undefined) {
+      if (gameState.response != null) {
         return gameState;
       }
       return {
