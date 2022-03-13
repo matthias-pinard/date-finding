@@ -1,12 +1,12 @@
 {
-  "days": [
-    "Lundi",
-    "Mardi",
-    "Mercredi",
-    "Jeudi",
-    "Vendredi",
-    "Samedi",
-    "Dimanche"
-  ],
-  "reset": "Reset"
+	"days": [
+		"Dimanche",
+		"Lundi",
+		"Mardi",
+		"Mercredi",
+		"Jeudi",
+		"Vendredi",
+		"Samedi"
+	],
+	"reset": "Reset"
 }
