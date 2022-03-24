@@ -76,6 +76,7 @@ export default function gameReducer(
       return {
         ...gameState,
         response: action.guess,
+        endTime: new Date().getTime(),
         gameStep: GameStep.Lose,
       };
     case "start":

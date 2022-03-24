@@ -1,3 +1,5 @@
+import { invoke } from "@tauri-apps/api";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useGameState } from "./GameState";
 
@@ -5,6 +7,17 @@ const Lose = () => {
   const { gameState, gameDispatch } = useGameState();
   const { t } = useTranslation();
   const days = t("days", { returnObjects: true });
+  const time = (gameState.endTime! - gameState.startTime!);
+  useEffect(() => {
+    if ("__TAURI__" in window) {
+      invoke("save_score", {
+        time,
+        nbResponse: gameState.currentNbAnswer,
+        win: false,
+      });
+    }
+  });
+
   return (
     <>
       <div className="text-xl">Lose !</div>
