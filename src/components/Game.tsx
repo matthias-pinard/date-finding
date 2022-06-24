@@ -1,11 +1,13 @@
-import { useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { GameStateContext, GameStateDispatcherContext } from "./GameState";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { guess } from "../store/game.slice";
+import { getRandomDate } from "../utils/date-utils";
 
 const Game = () => {
-  const { date } = useContext(GameStateContext);
+  const date = useSelector((state: RootState) => state.game.date);
 
-  const dateStr = date.toLocaleDateString("fr");
+  const dateStr = date!.toLocaleDateString("fr");
 
   return (
     <>
@@ -22,12 +24,24 @@ const Game = () => {
 };
 
 const GuessButton = ({ day }: { day: number }) => {
+  const date = useSelector((state: RootState) => state.game.date);
+  const dateStr = date!.toLocaleDateString("fr");
   const { t } = useTranslation();
-  const dispatch = useContext(GameStateDispatcherContext);
+  const dispatch = useDispatch();
+
   return (
     <button
       className={`mx-2 px-2 py-1 rounded-md bg-gray-200 hover:bg-gray-300`}
-      onClick={() => dispatch({ type: "guess", guess: day })}
+      onClick={() => {
+        return dispatch(
+          guess({
+            guess: day,
+            time: new Date().getTime(),
+            nextDate: getRandomDate().getTime(),
+            date: dateStr,
+          })
+        );
+      }}
     >
       {t("days", { returnObjects: true })[day]}
     </button>

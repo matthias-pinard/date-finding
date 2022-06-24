@@ -1,20 +1,16 @@
-import { invoke } from "@tauri-apps/api";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useGameState } from "./GameState";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { reset, save } from "../store/game.slice";
 
 const Win = () => {
-  const { gameState, gameDispatch } = useGameState();
+  const gameState = useSelector((state: RootState) => state.game);
+  const gameDispatch = useDispatch();
   const { t } = useTranslation();
   const time = gameState.endTime! - gameState.startTime!;
   useEffect(() => {
-    if ("__TAURI__" in window) {
-      invoke("save_score", {
-        time,
-        nbResponse: gameState.totalNbAnswer,
-        win: true,
-      });
-    }
+  gameDispatch(save())
   });
 
   return (
@@ -23,7 +19,7 @@ const Win = () => {
       <button
         className="bg-gray-200 hover:bg-gray-300 font-bold py-2 px-4 rounded"
         onClick={() => {
-          gameDispatch({ type: "reset" });
+          gameDispatch(reset());
         }}
       >
         {t("reset")}

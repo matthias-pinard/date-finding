@@ -1,9 +1,15 @@
 import { useState } from "react";
-import { useGameState } from "./GameState";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../store";
+import { start } from "../store/game.slice";
+import { getRandomDate } from "../utils/date-utils";
 
 const Param = () => {
-  const { gameState, gameDispatch } = useGameState();
+  const gameState = useSelector((state: RootState) => state.game);
+  const dispatch = useDispatch();
   const [numberOfDate, setNumberOfDate] = useState(gameState.totalNbAnswer);
+  const navigate = useNavigate();
   return (
     <div className="w-full flex justify-center p-10">
       <div className="max-w-sm">
@@ -27,11 +33,24 @@ const Param = () => {
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => {
-            console.log("hey :");
-            gameDispatch({ type: "start", number: numberOfDate });
+            dispatch(
+              start({
+                nbAnswer: numberOfDate,
+                startTime: new Date().getTime(),
+                firstDate: getRandomDate().getTime(),
+              })
+            );
           }}
         >
           Start
+        </button>
+        <button
+          onClick={() => {
+            navigate("/history");
+          }}
+	  className="pl-6"
+        >
+          History
         </button>
       </div>
     </div>
