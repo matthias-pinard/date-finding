@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use std::fs;
+use std::{fs, path::Path};
 
 use rusqlite::{params, Connection, OptionalExtension};
 use serde::Serialize;
@@ -53,7 +53,6 @@ fn save_guess(game_id: u64, time: u64, response_number: u64, response: u8, guess
 }
 
 fn init_db() {
-    fs::create_dir("/home/matthias/.local/share/date-recall").unwrap_or(());
     let conn = Connection::open(get_path()).unwrap();
     conn.execute(
         "
@@ -153,9 +152,12 @@ fn get_bad_guess(game_id: u64) -> Option<Guess> {
 fn get_path() -> String {
     let path_dir = directories::ProjectDirs::from("", "", "date-recall").unwrap();
     let data_dir = path_dir.data_dir();
-    let db_dir = data_dir.join("db");
-    fs::create_dir_all(data_dir).unwrap();
-    db_dir.to_str().unwrap().to_string()
+    let db_file = data_dir.join("db");
+    dbg!(!Path::new(&data_dir).exists());
+    if !Path::new(&data_dir).exists() {
+        fs::create_dir_all(data_dir).unwrap();
+    }
+    db_file.to_str().unwrap().to_string()
 }
 
 #[derive(Serialize, Debug)]

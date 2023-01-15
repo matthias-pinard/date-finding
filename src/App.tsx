@@ -1,6 +1,7 @@
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import "./components/history/history"
 import History from "./components/history/history";
 import Switch from "./components/Switch";
 import { store } from "./store";
@@ -18,7 +19,7 @@ function App() {
               </Provider>
             }
           />
-          <Route path="history" element={<History />} />
+          <Route path="history" element={<History/>} />
         </Routes>
       </BrowserRouter>
     </div>

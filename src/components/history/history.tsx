@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface History {
+interface IHistory {
   id: number;
   time: number;
   nb_response: number;
@@ -12,12 +12,11 @@ interface History {
 }
 
 const History = () => {
-  console.log("test");
   const navigate = useNavigate();
   const [history, setHistory] = useState<any[]>([]);
   useEffect(() => {
-    invoke("get_history").then((h: unknown) => setHistory(h as History[]));
-  });
+    invoke("get_history").then((h: unknown) => setHistory(h as IHistory[]));
+  }, []);
   return (
     <div className="flex flex-col">
       <div className="overflow-y-auto">
@@ -35,7 +34,7 @@ const History = () => {
   );
 };
 
-const HistoryElement = ({ history }: { history: History }) => {
+const HistoryElement = ({ history }: { history: IHistory }) => {
   const date = new Date(history.date);
   const win = history.nb_response === history.total_response;
   return (
