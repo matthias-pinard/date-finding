@@ -10,8 +10,6 @@ use serde::Serialize;
 
 mod migration;
 
-const PATH: &str = "/home/matthias/.local/share/date-recall/test.db";
-
 fn main() {
     init_db();
     tauri::Builder::default()
@@ -34,7 +32,7 @@ fn save_score(
     date: u64,
     bad_date: Option<String>,
 ) -> u64 {
-    let conn = Connection::open(&PATH).unwrap();
+    let conn = Connection::open(get_path()).unwrap();
     conn.execute(
         "INSERT INTO score(time, nb_response, win, total_response, date, bad_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
         params![time, nb_response, win, total_response, date, bad_date],
@@ -45,7 +43,7 @@ fn save_score(
 
 #[tauri::command]
 fn save_guess(game_id: u64, time: u64, response_number: u64, response: u8, guess: u8, date: &str) {
-    let conn = Connection::open(&PATH).unwrap();
+    let conn = Connection::open(get_path()).unwrap();
     conn.execute(
         "INSERT INTO guess(game_id, time, response_number, response, guess, date)
                  VALUES (?1, ?2, ?3 , ?4, ?5, ?6) ",
@@ -56,7 +54,7 @@ fn save_guess(game_id: u64, time: u64, response_number: u64, response: u8, guess
 
 fn init_db() {
     fs::create_dir("/home/matthias/.local/share/date-recall").unwrap_or(());
-    let conn = Connection::open(&PATH).unwrap();
+    let conn = Connection::open(get_path()).unwrap();
     conn.execute(
         "
         CREATE TABLE IF NOT EXISTS score( 
@@ -115,7 +113,7 @@ fn check_migration(conn: &Connection) {
 
 #[tauri::command]
 fn get_history() -> Vec<Score> {
-    let conn = Connection::open(&PATH).unwrap();
+    let conn = Connection::open(get_path()).unwrap();
     let mut stmt = conn
         .prepare("SELECT id, time, nb_response, total_response, win, date, bad_date FROM score")
         .unwrap();
@@ -138,7 +136,7 @@ fn get_history() -> Vec<Score> {
 
 #[tauri::command]
 fn get_bad_guess(game_id: u64) -> Option<Guess> {
-    let conn = Connection::open(&PATH).unwrap();
+    let conn = Connection::open(get_path()).unwrap();
     let mut stmt = conn
         .prepare("SELECT date, response, guess from guess where game_id=?1")
         .unwrap();
@@ -150,6 +148,14 @@ fn get_bad_guess(game_id: u64) -> Option<Guess> {
         })
     });
     bad_guess.ok()
+}
+
+fn get_path() -> String {
+    let path_dir = directories::ProjectDirs::from("", "", "date-recall").unwrap();
+    let data_dir = path_dir.data_dir();
+    let db_dir = data_dir.join("db");
+    fs::create_dir_all(data_dir).unwrap();
+    db_dir.to_str().unwrap().to_string()
 }
 
 #[derive(Serialize, Debug)]

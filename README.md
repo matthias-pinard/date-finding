@@ -1,7 +1,7 @@
-# Date Recall
+# Tauri + Vanilla
 
-An application to practice mental technique to find the weekday of a date.  
-The application is written with React and Redux (RTK).  
-A desktop application is available thank to [Tauri](https://tauri.app/), the desktop application allow to have an history of each session.
+This template should help get you started developing with Tauri in vanilla HTML, CSS and Javascript.
 
-Link to one of the technique that can be used to find the weekday of a date: https://artofmemory.com/blog/how-to-calculate-the-day-of-the-week/
+## Recommended IDE Setup
+
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
